@@ -50,12 +50,12 @@ def market_info(cred):
     response = requests.request("GET", url, params=querystring)
     return response
 
-def sale(cred,coinid):
+def sale(cred,coinid,balance):
     url = cred['baseurl'] + '/orders'
     query = {
         'market': 'KRW-'+coinid,
         'side': 'ask',
-        'volume': '100',
+        'volume': balance,
         'ord_type': 'market',
     }
     query_string = urlencode(query).encode()
@@ -117,12 +117,13 @@ def user_sail(account):
     now_price =current_price(cred, coinid) #current price
     hold = my_coin(cred,coinid)
     profit_price = calc_profit(hold['price'])
+    balance = hold['balance']
     
     if now_price > profit_price:
-        res_sale = sale(cred, coinid)
+        res_sale = sale(cred, coinid, hold['balance'])
         print(res_sale)
     else:
-        print(f'target price is {profit_price}, now {now_price}')
+        print(f'target price is {profit_price}, now {now_price}. balance :{balance}')
     
 
 def main():
