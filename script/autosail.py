@@ -12,7 +12,7 @@ import threading
 
 def make_cred(account):
     #path = "/Users/yangarch/Project/moneycopier/credential"
-    path = "/home/yansgarch/archcoin/moneycopier/credential"
+    path = "/home/yangarch/archcoin/moneycopier/credential"
     path = path + "/upbit.json"
     with open(path) as json_file:
         credentialFile = json.load(json_file)
