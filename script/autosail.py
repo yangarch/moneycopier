@@ -11,8 +11,8 @@ import threading
 
 
 def make_cred(account):
-    #path = "/Users/yangarch/Project/moneycopier/credential"
-    path = "/home/yangarch/archcoin/moneycopier/credential"
+    path = "/Users/yangarch/Project/moneycopier/credential"
+    #path = "/home/yangarch/archcoin/moneycopier/credential"
     path = path + "/upbit.json"
     with open(path) as json_file:
         credentialFile = json.load(json_file)
@@ -118,7 +118,7 @@ def user_sail(account):
     hold = my_coin(cred,except_list)
     for i in hold:
         try:
-            now_price =current_price(cred, i) #current price
+            now_price = current_price(cred, i) #current price
             profit_price = calc_profit(hold[i]['price'])    
             balance = hold[i]['balance']
             if now_price > profit_price:
@@ -126,7 +126,7 @@ def user_sail(account):
                 print(res_sale)
             else:
                 print(f'{account}: target price is {profit_price}, now {now_price}. balance :{balance}')
-        except:
+        except IndexError:
             print('check my bank detail')
             pass
 
