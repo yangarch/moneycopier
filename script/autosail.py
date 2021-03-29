@@ -12,7 +12,7 @@ import threading
 
 def make_cred(account):
     #path = "/Users/yangarch/Project/moneycopier/credential"
-    path = "/home/yangarch/archcoin/moneycopier/credential"
+    path = "/home/yansgarch/archcoin/moneycopier/credential"
     path = path + "/upbit.json"
     with open(path) as json_file:
         credentialFile = json.load(json_file)
@@ -87,44 +87,49 @@ def current_price(cred,coinid):
     price = response[0]['trade_price']
     return price
 
-def my_coin(cred,coinid):
+def my_coin(cred,except_list):
     mybank = my_bank(cred)
-    
     res = {}
-    res['balance'] = 0
-    res['price'] = 0
     try:
         for i in mybank:
-            if i['currency'] == coinid:
-                res['balance'] = i['balance']
-                res['price'] = i['avg_buy_price']
+            if i['currency'] not in except_list:
+                tmp={}
+                tmp['balance'] = 0
+                tmp['price'] = 0
+                tmp['balance'] = i['balance']
+                tmp['price'] = i['avg_buy_price']
+                res[i['currency']] = tmp
     except:
         pass
     return res
+
 
 def calc_profit(price):
     profit_rate = 1.0305
     profit_price = float(price) * profit_rate
     return profit_price
 
+
 def user_sail(account):
     account = account # trade name
     cred = make_cred(account)
-    url = cred['baseurl']
+    except_list = cred['except'].split(',')
 
-    coinid = "BTT" # trade coin name
-    #coinid = "CRO"
-    now_price =current_price(cred, coinid) #current price
-    hold = my_coin(cred,coinid)
-    profit_price = calc_profit(hold['price'])
-    balance = hold['balance']
-    
-    if now_price > profit_price:
-        res_sale = sale(cred, coinid, hold['balance'])
-        print(res_sale)
-    else:
-        print(f'target price is {profit_price}, now {now_price}. balance :{balance}')
-    
+    hold = my_coin(cred,except_list)
+    for i in hold:
+        try:
+            now_price =current_price(cred, i) #current price
+            profit_price = calc_profit(hold[i]['price'])    
+            balance = hold[i]['balance']
+            if now_price > profit_price:
+                res_sale = sale(cred, i, hold[i]['balance'])
+                print(res_sale)
+            else:
+                print(f'{account}: target price is {profit_price}, now {now_price}. balance :{balance}')
+        except:
+            print('check my bank detail')
+            pass
+
 
 def main():
     
